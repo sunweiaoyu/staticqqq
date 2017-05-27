@@ -10,12 +10,22 @@
 		<script type="text/javascript" src="js/jquery-2.1.3.min.js"></script>
 		<script type="text/javascript">
 			$(function(){
+				var asd=$("#gameview")[0].getContext("2d")
+				var baImage= new Image();
+				baImage.src="img/background.png";
 				var startImage= new Image();
-				startImage="";
-				startImage.onload=funcion(){
-					$("#gameview").getContext("2d").drawImage(startImage,0,0,500,500);
+				startImage.src="img/start.png";
+				startImage.onload = function(){
+					asd.drawImage(startImage,0,0,500,500);
 				}
+				
+				
+				$("#gameview").click(function(){
+					alert("开始");
+					asd.drawImage(baImage,0,0,500,500);
+				})
 			})
+			
 		</script>
 	</body>
 </html>
