@@ -14,15 +14,20 @@
 		<script type="text/javascript">
 			$(function(){
 				var snakegame= new Snake();
-				startImg.onload=function(){
-				snakegame.init();	
+//				bgImg.onload=function(){
+//				snakegame.init();
+//				
+//				}
+//				
+//				$("#gameview").click(function(){
+//					snakegame.start();
+//				})
+				
+				bgImg.onload=function(){
+					snakegame.start();
 				}
 				
-				$("#gameview").click(function(){
-					snakegame.start();
-				})
-			})
-			
+	})
 		</script>
 	</body>
 </html>
