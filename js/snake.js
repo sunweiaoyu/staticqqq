@@ -57,7 +57,7 @@ function Snake(){
 		//1读取BOM对象navigator的userAgent信息
 		var deviceInfo= navigator.userAgent;
 		//判断是否是PC端
-		if(deviceInfo.indexOf("windows")==-1){
+		if(deviceInfo.indexOf("Windows")==-1){
 			this.isPhone=true;
 			this.canvas.width=window.innerWidth;
 			this.canvas.height=window.innerHeight;
@@ -257,7 +257,7 @@ function Snake(){
 				clearInterval(_this.timer);//如果不清除，速度不断加快
 				_this.isDead=false;//改变状态
 				_this.snakeBodyList=[];//清除蛇身
-				$(_this.canvas).hide(2000);//游戏重新开始
+//				$(_this.canvas).hide(2000);//游戏重新开始
 			}else{
 							//3.1.2 false 蛇活着，判断蛇头是否与食物的坐标点一致，如果一致，清空数组
 			_this.eat();
