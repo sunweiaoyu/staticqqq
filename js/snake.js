@@ -36,18 +36,39 @@ function Snake(){
 	this.snakeBodyList=[];//设置蛇身数组
 	this.foodList=[];//食物数组
 	this.timer=null;//蛇动的定时器
-	this.score=0;
-	
-	
+	this.score=0;//分数
+	this.isDead=false;//蛇是否活着
+	this.isEaten=false;//食物是否被吃掉标识位
+	this.isPhone=false;
 	
 	//1生成初始化页面，点击页面，进入游戏
 	this.init =function(){
+		this.device();//判断设备类型
 		this.ctx.drawImage(startImg,0,0,this.width,this.height)
 	}
 	this.start=function(){
+		this.device();//判断设备类型
+		this.score=0;//积分清零
 		this.paint();
 		this.move();
 	}
+	
+	this.device=function(){
+		//1读取BOM对象navigator的userAgent信息
+		var deviceInfo= navigator.userAgent;
+		//判断是否是PC端
+		if(deviceInfo.indexOf("windows")==-1){
+			this.isPhone=true;
+			this.canvas.width=window.innerWidth;
+			this.canvas.height=window.innerHeight;
+			this.width=window.innerWidth;
+			this.height=window.innerHeight-1;
+			this.stepX=this.width/this.step;
+			this.stepY=this.height/this.step;
+		}
+		
+	}
+	
 	//2游戏开始。绘制背景。食物
 	this.paint = function(){
 		this.ctx.drawImage(bgImg,0,0,this.width,this.height);
@@ -96,7 +117,7 @@ function Snake(){
 		
 		if(this.foodList.length>0){
 			var fnode=this.foodList[0];
-		this.ctx.drawImage(fnode.img,fnode.x*this.step,fnode.x*this.step,this.step,this.step);
+		this.ctx.drawImage(fnode.img,fnode.x*this.step,fnode.y*this.step,this.step,this.step);
 		return;
 		}
 		//如果食物没有（食物被吃，或游戏初始化），生成XY随机坐标。判断是否与蛇身重复，如果重复，重新绘制，调用this.ctx.drawImage（），否则按照随机生成的点push到数组中，生成图案
@@ -135,13 +156,13 @@ function Snake(){
 		this.ctx.drawImage(fnode.img,fnode.x*this.step,fnode.y*this.step,this.step,this.step)
 	}
 	//3蛇动
-	this.move = function(){
-//		setInterval(this.timer);
+	//3.1判断设备如果是pc，相应键盘，否则响应触屏事件
+	//3.2生成键盘事件处理器
+	this.keyHandler=function(){//键盘
 		var _this=this;
 		//事件处理是异步的，无法传递this对象
 		document.onkeydown=function(ev){
 			var ev=ev||window.event;
-//			var code=ev.keyCode;
 			switch(ev.keyCode){
 				case 38://向上
 				  _this.snakeBodyList[0].img=northImg;
@@ -161,41 +182,49 @@ function Snake(){
 				break;
 			}
 		}
+	}
+	this.touchHandler=function(){//触屏
+		var _this=this;
+		document.addEventListener("touchstart",function(ev){
+			console.log(ev);
+			var touchX=ev.changedTouches[0].clientX;
+			var touchY=ev.changedTouches[0].clientY;
+			var head=_this.snakeBodyList[0];
+			var headX=head.x*_this.step//乘以步长;
+			var headY=head.y*_this.step;
+			if(head.direct=="north"||head.direct=="south"){
+				if(touchX<headX){
+					head.direct="west";
+					head.img=westImg;
+				}else{
+					head.direct="east";
+					head.img=eastImg;
+				}
+			}else if(head.direct=="west"||head.direct=="east"){
+				if(touchY<headY){
+					head.direct="north";
+					head.img=northImg;
+				}else{
+					head.direct="south";
+					head.img=southImg;
+				}
+			}
+			
+		})
+	}
+	
+	this.move = function(){
+		if(!this.isPhone){
+			this.keyHandler();
+			console.log("asdas");
+		}else{
+			this.touchHandler();
+			console.log("哈哈哈哈哈");
+		}
+		var _this=this;
+		//事件处理是异步的，无法传递this对象
 		
 		//运用定时器，每0.2秒动蛇（坐标变化，重绘）
-//		this.timer=setInterval(function(){
-//			//解决蛇身跟随
-//			
-////			
-////			for(var i=_this.snakeBodyList.length-1;i>0;i--){
-////				_this.snakeBodyList[i].x=_this.snakeBodyList[i-1].x;
-////				_this.snakeBodyList[i].y=_this.snakeBodyList[i-1].y;
-////				//
-////				var shead=_this.snakeBodyList[0];
-////				switch(shead.direct){
-//					case "north":
-//					    
-//					    shead.y--;
-//					break;
-//					case "south":
-//					    
-//					    shead.y++;
-//					break;
-//					case "west":
-//					    
-//					    shead.x--;
-//					break;
-//					case "east":
-//					   
-//					    shead.x++;
-//					break;
-//				}
-//			}
-//			_this.paint();//重绘制游戏画面
-//		},1000);
-
-
-
 
           this.timer=setInterval(function(){
 			//蛇头的坐标发生变化， 并且蛇身发生变化，移动
@@ -204,27 +233,53 @@ function Snake(){
 				_this.snakeBodyList[i].x=_this.snakeBodyList[i-1].x;
 				_this.snakeBodyList[i].y=_this.snakeBodyList[i-1].y;
 			}
+			//根据方向坐标，处理蛇头的新坐标
 			var shead=_this.snakeBodyList[0]
 			switch(shead.direct){
 				case "north":
-//				    shead.img =northImg;
 				    shead.y-=1;
 				break;
 				case "south":
-//				    shead.img =southImg;
 				    shead.y+=1;
 				break;
 				case "west":
-//				    shead.img =westImg;
 				    shead.x-=1;
 				break;
 				case "east":
-//				    shead.img =eastImg;
 				    shead.x+=1;
 				break;
-				
 			}
-			_this.paint()//重绘游戏画面
+			//3.1.1判断蛇移动后新位置是否已经触碰边界或触碰自身死亡。
+			_this.dead();//判断生死
+			if(_this.isDead){
+				//alert最终分数
+				alert("你的分数:"+_this.score);
+				clearInterval(_this.timer);//如果不清除，速度不断加快
+				_this.isDead=false;//改变状态
+				_this.snakeBodyList=[];//清除蛇身
+				$(_this.canvas).hide(2000);//游戏重新开始
+			}else{
+							//3.1.2 false 蛇活着，判断蛇头是否与食物的坐标点一致，如果一致，清空数组
+			_this.eat();
+			if(_this.isEaten){
+				console.log("asda");
+				_this.isEaten=false;
+				//清空食物数组
+				_this.foodList=[];
+				//加分
+				_this.score+=10;
+				//蛇身涨一节
+				var lastNodeIndex=_this.snakeBodyList.length;
+				_this.snakeBodyList[lastNodeIndex]={
+					x:-2,
+					y:-2,
+					img:bodyImg,
+					direct:_this.snakeBodyList[lastNodeIndex-1].direct
+				}
+			}
+			//3.1.3 否则重绘
+			_this.paint();//重绘游戏画面
+			}
 			
 		},200)
 
@@ -234,8 +289,34 @@ function Snake(){
 	
 	//4蛇死
 	this.dead=function(){
-		
+//		this.isDead=true;//实验是否可以弹出分数
+        const LEFT_END=0;//左边界
+        const RIGHT_END=this.stepX;//右边界
+        const NORTH_END=0;//上边界
+        const SOUTH_END=this.stepY;//下边界
+        const headX=this.snakeBodyList[0].x;//蛇头横坐标
+        const headY=this.snakeBodyList[0].y;//纵坐标
+        //判断边界
+        if(headX<LEFT_END || headY<NORTH_END || headX>RIGHT_END || headY>SOUTH_END){
+        	this.isDead=true;
+        	return;
+        };
+        //判断是否撞到自身
+        for(var k=this.snakeBodyList.length-1;k>3;k--){
+        	
+        if(this.snakeBodyList[k].x==headX && this.snakeBodyList[k].y==headY){
+        	this.isDead=true;
+        }
+        }
 	}
 	//5 吃食物
-	
+	this.eat=function(){
+		const HEAD_X=this.snakeBodyList[0].x;
+		const HEAD_Y=this.snakeBodyList[0].y;
+		const FOOD_X=this.foodList[0].x;
+		const FOOD_Y=this.foodList[0].y;
+		if(HEAD_X==FOOD_X && HEAD_Y==FOOD_Y){
+			this.isEaten=true;
+		}
+	}
 }
