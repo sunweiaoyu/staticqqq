@@ -1,74 +1,294 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 		<title>贪吃蛇</title>
-		<style type="text/css">* {
-	margin: 0;
-	padding: 0;
-}
+		<style type="text/css">
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			
+			#bigdiv {
+				/*max-width:500px;*/
+				/*width:100%;*/
+				width: 12rem;
+				/*background-color: yellow;
+				height:100%;*/
+				/*height:12rem;*/
+			}
+			
+			#foot {
+				/*margin: 10px auto;*/
+				font-size: 16px;
+				display:none;
+			
+			}
+			
+			select {
+				border-radius: 5px;
+				background-color: orange;
+				color: white;
+				border: 0px;
+				font-size: 16px;
+				margin-left: 20px;
+			}
+			
+			@media only screen and (max-width:800px) {
+				#bigdiv {
+					width: 100%;
+				}
+				#gameview {
+					width: 100%;
+				}
+				#kaishi {
+					width: 15%;
+					height: 8%;
+					top: 1rem;
+					left: 1rem;
+				}
+				#foot {
+					width: 100%;
+				}
+			}
+			
+			#kaishi {
+				width: 1.2rem;
+				height: 0.5rem;
+				background: url("img/play.png") no-repeat;
+				background-size: 1.2rem 0.5rem;
+				/*color:white;*/
+				font-weight: bold;
+				text-align: center;
+				line-height: 60px;
+				border-radius: 5px;
+				position: absolute;
+				top: 26px;
+				left: 2.3rem;
+			}
+			
+			.bcontent {
+				width: 100%;
+				height: 100%;
+				background-color: rgba(0, 0, 0, 0.5);
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				display: none;
+				overflow: hidden;
+			}
+			
+			.content {
+				background-color: white;
+				width: 15%;
+				line-height: 35px;
+				text-align: center;
+				position: relative;
+				top: 30%;
+				left: 3rem;
+				border-radius: 10px;
+				color: deeppink;
+				padding: 20px;
+				font-size: 16px;
+			}
+			
+			#bian {
+				display: inline-block;
+				vertical-align: middle;
+				margin-right: 0.5rem;
+			}
+			
+			#skin {
+				display: inline-block;
+				vertical-align: middle;
+				width: 1.3rem;
+				padding:5px;
+				height:0.3rem;
+			}
+			
+			#skin1 {
+				display: inline-block;
+				vertical-align: middle;
+				width: 1.3rem;
+				padding:5px;
+				height:0.3rem;
+			}
+			#money{
+				display: inline-block;
+				vertical-align: middle;
+				width: 1rem;
+				color:#FFFFFF;
+				border-radius:4px;
+				background-color:pink;
+				margin-left: 0.5rem;
+			}
+			
+			
+			
+			#more{
+				width:0.6rem;
+				height:0.3rem;
+				background-color:#ccc;
+				font-size:16px;
+				line-height:0.3rem;
+				text-align:center;
+				border-radius:10px;
+				position:absolute;
+				top:4rem;
+				left:8.5rem;
+				color:chocolate;
+				font-weight: bold;
+				z-index:10;
+			}
 
-#food {
-	display: flex;
-	margin-top: 20px;
-}
-
-select {
-	border-radius: 5px;
-	background-color: orange;
-	color: white;
-	border: 0px;
-}</style>
+		</style>
 	</head>
-	<body>
-		
-		
-		<canvas id="gameview" width="500" height="500"></canvas>
-		
-		 <div id="" style="font-weight:bold;margin:10px 0;">
-			快← &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; →慢
-		        </div>
-		        <input type="range" name="" id="ranges" value="" min="100" max="1000"/>
-		        <div id="aranges">25米/550毫秒</div>
-		
-		<div id="food"> 
-			    <select name="skin">
-			    	<option value="num1">请选择背景--</option>
-			    	<option value="num2">背景皮肤2</option>
-			    	<option value="num3">皮肤3</option>
-			    </select>
-			    
-			    <select name="she">
-			    	<option value="pifu1">请选择蛇皮肤--</option>
-			    	<option value="pifu2">蛇皮肤1</option>
-			    	<option value="pifu2">蛇皮肤2</option>
-			    </select>
-		</div>  
-		
 
-		
-		
-		
-		
+	<body>
+
+		<div id="bigdiv">
+
+			<center>
+				<canvas id="gameview" width="850" height="500"></canvas>
+				<div id="kaishi">
+				</div>
+				<div id="more">
+					更多
+				</div>
+
+				<div id="foot">
+					<div id="bian">
+
+						<div id="" style="font-weight:bold;margin:10px 0;">
+							快← &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; →慢
+						</div>
+						<input type="range" name="" id="ranges" value="" min="100" max="1000" />
+						<div id="aranges">25米/550毫秒</div>
+					</div>
+
+					<select name="skin" id="skin" placeholder="换肤">
+						<!--<option value="num1">换肤</option>-->
+						<option value="11">背景皮肤皮肤一</option>
+						<option value="22">背景皮肤皮肤二</option>
+						<option value="33">背景皮肤皮肤三</option>
+					</select>
+
+					<select name="she" id="skin1">
+						<option value="111">蛇皮肤一</option>
+						<option value="222">蛇皮肤二</option>
+						<option value="333">蛇皮肤三</option>
+						<!--<option value="pifu2">蛇皮肤2</option>
+						<option value="pifu3">蛇皮肤3</option>-->
+					</select>
+					<div id="money">充值</div>
+
+					<audio autoplay="autoplay" id="music">开始音乐</audio>
+
+				</div>
+
+				<div class="bcontent">
+					<div class="content"></div>
+
+				</div>
+			</center>
+		</div>
+
 		<script type="text/javascript" src="js/jquery-2.1.3.min.js"></script>
 		<script type="text/javascript" src="js/snake.js">
-			
 		</script>
 		<script type="text/javascript">
 			$(function() {
-	var snakegame = new Snake();
-	bgImg.onload = function() {
-		snakegame.init();
-	}
-	$("#gameview").click(function() {
-		snakegame.start();
-	})
+				var snakegame = new Snake();
+				
+//				$("#skin1").change(function(){
+//         	  var $ur=$("#skin1")[0].value;
+//         	  $(bodyImg).prop("src","img/body"+$ur+".jpg");
+//         	  console.log($(bodyImg).prop("src"));
+//         })
+				
+				
+				bgImg.onload = function() {
+					snakegame.init();
+				}
 
-	//				bgImg.onload=function(){
-	//					snakegame.start();
-	//				}
-})
+				$("#skin").change(function() {
+					var $url = $("#skin")[0].value;
+					$(bgImg).prop("src", "img/" + $url + ".jpg");
+					$(this).blur();
+				})
+				
+				 
+				
+
+				$("#kaishi").click(function() {
+					
+					snakegame.start();
+					$(this).css("opacity","0.7");
+					$("#music").attr("src", "img/1.mp3");
+					
+					$("#foot").css("display","none");
+         		    flag=false;
+					$("#more").css("opacity","0.8");
+				})
+
+				$(".content").click(function() {
+					$(".bcontent").css("display", "none");
+					snakegame.start();
+					$("#music").attr("src", "img/1.mp3");
+				})
+				
+				
+				
+
+				//点击充值按钮输入内容添加到localstorage中
+				var balance = 0;
+				if(!localStorage.balance) {
+					localStorage.setItem("balance", parseInt(balance));
+				}
+				//PC端充值
+				$("#money").click(function() {
+					money = Number(prompt("请输入充值金额", ""));
+
+					localStorage.setItem("balance", money);
+					location = location;
+					loadALL();
+				})
+				loadALL();
+				function loadALL(){
+					
+				}
+				
+				var flag=false;
+         $("#more").click(function(){
+         	
+         	if (!flag){
+         		$("#foot").css("display","block");
+         		flag=true;
+         	}else{
+         		$("#foot").css("display","none");
+         		flag=false;
+         	}
+         	
+            
+         })
+
+				
+				
+				
+
+				function fn() {
+					var basefontsize = window.innerWidth / 12;
+					$("html").css("font-size", basefontsize);
+				}
+				fn();
+				$(window).resize(function() {
+					fn();
+				})
+
+			})
 		</script>
 	</body>
+
 </html>

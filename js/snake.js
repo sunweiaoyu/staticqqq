@@ -27,15 +27,18 @@ bgImg.src="img/background.png";
 const bodyImg= new Image();
 bodyImg.src="img/body.png";
 
+const sbodyImg= new Image();
+sbodyImg.src="img/body.png";
+
 const startImg= new Image();
-startImg.src="img/start.png";
+startImg.src="img/1.jpg";
 
 
 
 function Snake(){
 	this.canvas=$("#gameview")[0];//画布
 	this.ctx=this.canvas.getContext("2d");//画笔
-	this.width=500;//（游戏屏幕）背景宽度
+	this.width=850;//（游戏屏幕）背景宽度
 	this.height=500;//游戏屏幕高度
 	this.step=25;//设计步长
 	this.stepX=Math.floor(this.width/this.step);//X轴步数
@@ -62,6 +65,20 @@ function Snake(){
 		this.score=0;//积分清零
 		this.paint();//绘制背景，食物
 		this.move();//2.4蛇移动
+//		var _this=this;
+//		var dex=true;
+//		 $("#kaishi").click(function(){
+//       	if(dex==true){
+//       		_this.move();
+//       	    $(this).html("暂停");
+//       	    dex=false;
+//       	}else{
+//       		clearInterval(_this.timer);
+//       		$(this).html("开始游戏");
+//             dex=true;
+//       	}
+//          
+//       })
 	}
 	
 	this.device=function(){
@@ -70,10 +87,17 @@ function Snake(){
 		//判断是否是PC端
 		if(deviceInfo.indexOf("Windows")==-1){
 			this.isPhone=true;
-			this.canvas.width=window.innerWidth;
-			this.canvas.height=window.innerHeight;
-			this.width=window.innerWidth;
-			this.height=window.innerHeight-1;
+//			this.canvas.width=window.innerWidth;
+//			this.canvas.height=window.innerHeight;
+//			this.width=window.innerWidth;
+//			this.height==window.innerHeight-1;
+			
+			this.width=414;
+			this.height=550;
+			
+			this.canvas.width=414;
+			this.canvas.height=550;
+			
 			this.stepX=this.width/this.step;
 			this.stepY=this.height/this.step;
 		}
@@ -135,15 +159,16 @@ function Snake(){
 			foodFlag=false;
 			this.drawFood();
 		}else{
-//			for(var i=1;i<=3;i++){
+
 				this.foodList.push({
 			     x:foodX,
 			     y:foodY,
 			     img:foodImg2
 		    })
-				var asd=parseInt(Math.random()*3+1)
+				var asd=parseInt(Math.random()*3+1);
 				foodImg2.src="img/food"+asd+".png";
-//			}
+				foodImg2.zxc=asd;//////////////////////////////////////////////
+
 			
 			var fnode=this.foodList[0];
 		this.ctx.drawImage(fnode.img,fnode.x*this.step,fnode.y*this.step,this.step,this.step)
@@ -179,36 +204,36 @@ function Snake(){
 			}
 		}
 	}
-//	this.touchHandler=function(){//触屏
-//		var _this=this;
-//		document.addEventListener("touchstart",function(ev){
-////			console.log(ev);
-//          var ev = ev||window.event;
-//			var touchX=ev.changedTouches[0].clientX;
-//			var touchY=ev.changedTouches[0].clientY;
-////			console.log(touchY);
-//			var head=_this.snakeBodyList[0];
-//			var headX=head.x*_this.step//乘以步长;
-//			var headY=head.y*_this.step;
-//			if(head.direct=="north" || head.direct=="south"){
-//				if(touchX<headX){
-//					head.direct="west";
-//					head.img=westImg;
-//				}else if(touchX>headX){
-//					head.direct="east";
-//					head.img=eastImg;
-//				}
-//			}else if(head.direct=="west" || head.direct=="east"){
-//				if(touchY<headY){
-//					head.direct="north";
-//					head.img=northImg;
-//				}else{
-//					head.direct="south";
-//					head.img=southImg;
-//				}
-//			}
-//		})
-//	}
+	this.touchHandler=function(){//触屏
+		var _this=this;
+		document.addEventListener("touchstart",function(ev){
+//			console.log(ev);
+            var ev = ev||window.event;
+			var touchX=ev.changedTouches[0].clientX;
+			var touchY=ev.changedTouches[0].clientY;
+//			console.log(touchY);
+			var head=_this.snakeBodyList[0];
+			var headX=head.x*_this.step//乘以步长;
+			var headY=head.y*_this.step;
+			if(head.direct=="north" || head.direct=="south"){
+				if(touchX<headX){
+					head.direct="west";
+					head.img=westImg;
+				}else if(touchX>headX){
+					head.direct="east";
+					head.img=eastImg;
+				}
+			}else if(head.direct=="west" || head.direct=="east"){
+				if(touchY<headY){
+					head.direct="north";
+					head.img=northImg;
+				}else{
+					head.direct="south";
+					head.img=southImg;
+				}
+			}
+		})
+	}
 	
 	this.move = function(){
 		if(!this.isPhone){
@@ -253,8 +278,17 @@ function Snake(){
 			//3.1.1判断蛇移动后新位置是否已经触碰边界或触碰自身死亡。
 			_this.dead();//判断生死
 			if(_this.isDead){
+				
+				$("#music").attr("src","img/dead.mp3");
+				$(".bcontent").css("display","block");
+				$(".content").html("最终分数："+_this.score);
+                
+				
+				
+				
 				//alert最终分数
-				alert("你的分数:"+_this.score);
+				
+				
 				clearInterval(_this.timer);//如果不清除，速度不断加快
 				_this.isDead=false;//改变状态
 				_this.snakeBodyList=[];//清除蛇身
@@ -266,15 +300,14 @@ function Snake(){
 				_this.isEaten=false;
 				
 				//加分
-				
-				switch(_this.foodList[0].img.src){
-					case "http://127.0.0.1:8020/snake123/static/img/food1.png":
+				switch(foodImg2.zxc){
+					case 1:
 					_this.score+=10;
 					break;
-					case "http://127.0.0.1:8020/snake123/static/img/food2.png":
+					case 2:
 					_this.score+=20;
 					break;
-					case "http://127.0.0.1:8020/snake123/static/img/food3.png":
+					case 3:
 					_this.score+=30;
 					break;
 				}
@@ -317,6 +350,7 @@ function Snake(){
         	
         if(this.snakeBodyList[k].x==headX && this.snakeBodyList[k].y==headY){
         	this.isDead=true;
+        	$("#music").attr("src","img/dead.mp3");
         }
         }
 	}
@@ -330,4 +364,7 @@ function Snake(){
 			this.isEaten=true;
 		}
 	}
+	
+	
+	
 }
