@@ -262,12 +262,26 @@ function Snake(){
 			}else{//3.1.2 false 蛇活着，判断蛇头是否与食物的坐标点一致，如果一致，清空数组（判断是否吃到食物）
 			_this.eat();
 			if(_this.isEaten){
-				console.log("asda");
+				
 				_this.isEaten=false;
+				
+				//加分
+				
+				switch(_this.foodList[0].img.src){
+					case "http://127.0.0.1:8020/snake123/static/img/food1.png":
+					_this.score+=10;
+					break;
+					case "http://127.0.0.1:8020/snake123/static/img/food2.png":
+					_this.score+=20;
+					break;
+					case "http://127.0.0.1:8020/snake123/static/img/food3.png":
+					_this.score+=30;
+					break;
+				}
+				console.log(_this.foodList[0].img.src);
 				//清空食物数组
 				_this.foodList=[];
-				//加分
-				_this.score+=10;
+				
 				//蛇身涨一节
 				var lastNodeIndex=_this.snakeBodyList.length;
 				_this.snakeBodyList[lastNodeIndex]={
