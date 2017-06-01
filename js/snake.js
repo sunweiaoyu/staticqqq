@@ -1,4 +1,4 @@
-//全局变量使用const关键字定义，只读，不需更改；
+//全局变量使用const关键字定义，只读，不能更改；
 const northImg= new Image();
 northImg.src="img/north.png";
 
@@ -11,8 +11,15 @@ eastImg.src="img/east.png";
 const westImg= new Image();
 westImg.src="img/west.png";
 
-const foodImg= new Image();
-foodImg.src="img/food.png";
+const foodImg3= new Image();
+foodImg3.src="img/food3.png";
+
+const foodImg2= new Image();
+foodImg2.src="img/food2.png";
+
+const foodImg1= new Image();
+foodImg1.src="img/food1.png";
+
 
 const bgImg= new Image();
 bgImg.src="img/background.png";
@@ -39,18 +46,22 @@ function Snake(){
 	this.score=0;//分数
 	this.isDead=false;//蛇是否活着
 	this.isEaten=false;//食物是否被吃掉标识位
-	this.isPhone=false;
-	
+	this.isPhone=false;//适配移动端
+	this.timers=null;
 	//1生成初始化页面，点击页面，进入游戏
 	this.init =function(){
 		this.device();//判断设备类型
-		this.ctx.drawImage(startImg,0,0,this.width,this.height)
+		this.ctx.drawImage(startImg,0,0,this.width,this.height);
+		this.timers=setInterval(function(){
+			$("#aranges").html("25米/"+$("#ranges").prop("value")+"毫秒");
+		},100)
+		
 	}
 	this.start=function(){
 		this.device();//判断设备类型
 		this.score=0;//积分清零
-		this.paint();
-		this.move();
+		this.paint();//绘制背景，食物
+		this.move();//2.4蛇移动
 	}
 	
 	this.device=function(){
@@ -74,19 +85,14 @@ function Snake(){
 		this.ctx.drawImage(bgImg,0,0,this.width,this.height);
 		//2.2化蛇
 		this.drawSnake();
-		//2.3
+		//2.3画食物
 		this.drawFood();
-		
-		
-		//2.4蛇移动
-//		this.move();
 	}
 	
-	//化蛇：算法[{x:横坐标，y：纵坐标，img：，direction：}]
+	//化蛇：算法[{x:横坐标,y：纵坐标,img： bodyImg,direct："west"}]
 	this.drawSnake=function(){
 		//2.2.1循环生成snakeBodyList数组中的对象集合（默认蛇于中间，蛇头向西）
 		if(this.snakeBodyList.length<5){
-			
 			for(let i=0;i<5;i++){
 			//蛇的节点设置
 			this.snakeBodyList.push({
@@ -96,13 +102,10 @@ function Snake(){
 				direct:"west"
 			})
 		}
-		
 		//2.2.2替换snakeBodyList数组第一个元素的img变为蛇头图片
 		this.snakeBodyList[0].img=westImg;
-			
+//		this.snakeBodyList[0].direct="west";
 		}
-		
-		
 		//2.2.3便利snakeBodyList数组。画出蛇初始状态
 		for(var i=0;i<this.snakeBodyList.length;i++){
 			var snode=this.snakeBodyList[i];
@@ -112,9 +115,7 @@ function Snake(){
 	//画食物
 	
 	this.drawFood=function(){
-		
 		//2.3.1当食物已经存在的时候，画面刷新时，食物在原有位置重新绘制
-		
 		if(this.foodList.length>0){
 			var fnode=this.foodList[0];
 		this.ctx.drawImage(fnode.img,fnode.x*this.step,fnode.y*this.step,this.step,this.step);
@@ -133,25 +134,20 @@ function Snake(){
 		if(foodFlag){
 			foodFlag=false;
 			this.drawFood();
-			
 		}else{
-			this.foodList.push({
-			x:foodX,
-			y:foodY,
-			img:foodImg
+//			for(var i=1;i<=3;i++){
+				this.foodList.push({
+			     x:foodX,
+			     y:foodY,
+			     img:foodImg2
 		    })
+				var asd=parseInt(Math.random()*3+1)
+				foodImg2.src="img/food"+asd+".png";
+//			}
+			
 			var fnode=this.foodList[0];
 		this.ctx.drawImage(fnode.img,fnode.x*this.step,fnode.y*this.step,this.step,this.step)
-			
 		}
-		
-		
-//		this.foodList.push({
-//			x:Math.floor(Math.random()*this.stepX),
-//			y:Math.floor(Math.random()*this.stepY),
-//			img:foodImg
-//		})
-		
 		var fnode=this.foodList[0];
 		this.ctx.drawImage(fnode.img,fnode.x*this.step,fnode.y*this.step,this.step,this.step)
 	}
@@ -183,48 +179,52 @@ function Snake(){
 			}
 		}
 	}
-	this.touchHandler=function(){//触屏
-		var _this=this;
-		document.addEventListener("touchstart",function(ev){
-			console.log(ev);
-			var touchX=ev.changedTouches[0].clientX;
-			var touchY=ev.changedTouches[0].clientY;
-			var head=_this.snakeBodyList[0];
-			var headX=head.x*_this.step//乘以步长;
-			var headY=head.y*_this.step;
-			if(head.direct=="north"||head.direct=="south"){
-				if(touchX<headX){
-					head.direct="west";
-					head.img=westImg;
-				}else{
-					head.direct="east";
-					head.img=eastImg;
-				}
-			}else if(head.direct=="west"||head.direct=="east"){
-				if(touchY<headY){
-					head.direct="north";
-					head.img=northImg;
-				}else{
-					head.direct="south";
-					head.img=southImg;
-				}
-			}
-			
-		})
-	}
+//	this.touchHandler=function(){//触屏
+//		var _this=this;
+//		document.addEventListener("touchstart",function(ev){
+////			console.log(ev);
+//          var ev = ev||window.event;
+//			var touchX=ev.changedTouches[0].clientX;
+//			var touchY=ev.changedTouches[0].clientY;
+////			console.log(touchY);
+//			var head=_this.snakeBodyList[0];
+//			var headX=head.x*_this.step//乘以步长;
+//			var headY=head.y*_this.step;
+//			if(head.direct=="north" || head.direct=="south"){
+//				if(touchX<headX){
+//					head.direct="west";
+//					head.img=westImg;
+//				}else if(touchX>headX){
+//					head.direct="east";
+//					head.img=eastImg;
+//				}
+//			}else if(head.direct=="west" || head.direct=="east"){
+//				if(touchY<headY){
+//					head.direct="north";
+//					head.img=northImg;
+//				}else{
+//					head.direct="south";
+//					head.img=southImg;
+//				}
+//			}
+//		})
+//	}
 	
 	this.move = function(){
 		if(!this.isPhone){
 			this.keyHandler();
-			console.log("asdas");
+//			console.log("asdas");
 		}else{
 			this.touchHandler();
-			console.log("哈哈哈哈哈");
+//			console.log("哈哈哈哈哈");
 		}
 		var _this=this;
 		//事件处理是异步的，无法传递this对象
 		
 		//运用定时器，每0.2秒动蛇（坐标变化，重绘）
+		var sudu=$("#ranges").prop("value");
+		
+		console.log(sudu);
 
           this.timer=setInterval(function(){
 			//蛇头的坐标发生变化， 并且蛇身发生变化，移动
@@ -234,7 +234,8 @@ function Snake(){
 				_this.snakeBodyList[i].y=_this.snakeBodyList[i-1].y;
 			}
 			//根据方向坐标，处理蛇头的新坐标
-			var shead=_this.snakeBodyList[0]
+			var shead=_this.snakeBodyList[0];
+			
 			switch(shead.direct){
 				case "north":
 				    shead.y-=1;
@@ -258,8 +259,7 @@ function Snake(){
 				_this.isDead=false;//改变状态
 				_this.snakeBodyList=[];//清除蛇身
 //				$(_this.canvas).hide(2000);//游戏重新开始
-			}else{
-							//3.1.2 false 蛇活着，判断蛇头是否与食物的坐标点一致，如果一致，清空数组
+			}else{//3.1.2 false 蛇活着，判断蛇头是否与食物的坐标点一致，如果一致，清空数组（判断是否吃到食物）
 			_this.eat();
 			if(_this.isEaten){
 				console.log("asda");
@@ -271,7 +271,7 @@ function Snake(){
 				//蛇身涨一节
 				var lastNodeIndex=_this.snakeBodyList.length;
 				_this.snakeBodyList[lastNodeIndex]={
-					x:-2,
+					x:-2, 
 					y:-2,
 					img:bodyImg,
 					direct:_this.snakeBodyList[lastNodeIndex-1].direct
@@ -281,10 +281,7 @@ function Snake(){
 			_this.paint();//重绘游戏画面
 			}
 			
-		},200)
-
-      
-		
+		},sudu)
 	}
 	
 	//4蛇死
