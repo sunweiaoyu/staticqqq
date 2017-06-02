@@ -167,9 +167,10 @@ function Snake(){
 			     y:foodY,
 			     img:foodImg2
 		    })
+				//改变事物。随机生成三种食物
 				var asd=parseInt(Math.random()*3+1);
 				foodImg2.src="img/food"+asd+".png";
-				foodImg2.zxc=asd;//////////////////////////////////////////////
+				foodImg2.zxc=asd;
 
 			
 			var fnode=this.foodList[0];
@@ -280,7 +281,7 @@ function Snake(){
 			//3.1.1判断蛇移动后新位置是否已经触碰边界或触碰自身死亡。
 			_this.dead();//判断生死
 			if(_this.isDead){
-				
+				//蛇死时候播放音乐
 				$("#music").attr("src","img/dead.mp3");
 				$(".bcontent").css("display","block");
 				$(".content").html("最终分数："+_this.score);
@@ -298,12 +299,13 @@ function Snake(){
 			}else{//3.1.2 false 蛇活着，判断蛇头是否与食物的坐标点一致，如果一致，清空数组（判断是否吃到食物）
 			_this.eat();
 			if(_this.isEaten){
+				//吃食物播放音乐
 				$("#music1").attr("autoplay","autoplay");
-				$("#music1").attr("src","img/dead.mp3");
+				$("#music1").attr("src","img/4787.wav");
 				_this.isEaten=false;
 				
 				//加分
-				switch(foodImg2.zxc){
+				switch(foodImg2.zxc){//根据不同事物加不同分数
 					case 1:
 					_this.score+=10;
 					break;
