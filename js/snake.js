@@ -100,6 +100,8 @@ function Snake(){
 			
 			this.stepX=this.width/this.step;
 			this.stepY=this.height/this.step;
+			
+			
 		}
 		
 	}
@@ -296,7 +298,8 @@ function Snake(){
 			}else{//3.1.2 false 蛇活着，判断蛇头是否与食物的坐标点一致，如果一致，清空数组（判断是否吃到食物）
 			_this.eat();
 			if(_this.isEaten){
-				
+				$("#music1").attr("autoplay","autoplay");
+				$("#music1").attr("src","img/dead.mp3");
 				_this.isEaten=false;
 				
 				//加分
